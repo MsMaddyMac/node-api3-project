@@ -88,7 +88,7 @@ function validateUserId(req, res, next) {
 function validateUser(req, res, next) {
   const userData = req.body;
 
-  if (userData.length === 0) {
+  if (Object.keys(userData).length === 0) {
     res.status(400).json({ message: 'missing user data.' });
   }
   if (!userData.name) {
