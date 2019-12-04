@@ -14,6 +14,20 @@ function logger(req, res, next) {
   next();
 };
 
+function validateUserId(req, res, next) {
+  const id = req.params.id;
+  const user = req.user;
+
+  if (id.length > 0) {
+    user
+    next();
+  } else {
+    res
+      .status(400)
+      .json({ message: 'invalid user id.' });
+  }
+}
+
 server.use(logger); // this will run globally (on every endpoint).
 
 module.exports = server;
