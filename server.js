@@ -8,6 +8,12 @@ server.get('/', (req, res) => {
 
 //custom middleware
 
-function logger(req, res, next) {}
+function logger(req, res, next) {
+  console.log(`[${new Date().toISOString()}] ${req.method} to ${req.originalUrl}`)
+
+  next();
+};
+
+server.use(logger); // this will run globally (on every endpoint).
 
 module.exports = server;
