@@ -25,12 +25,30 @@ router.get('/', (req, res) => {
   });
 });
 
-router.get('/:id', (req, res) => {
-  // do your magic!
+router.get('/:id', validateUserId, (req, res) => {
+  Users.getById(req.params.id)
+  .then(user => {
+    if(user) {
+      res.status(200).json(user);
+    } 
+  })
 });
 
-router.get('/:id/posts', (req, res) => {
-  // do your magic!
+// client makes GET request to retrieve posts by a specific user
+router.get('/:id/posts', validateUserId, (req, res) => {
+  
+  Users.getUserPosts(req.params.id)
+  .then(posts => {
+    if (posts.length == 0) {
+      res.status(400).json({ errorMessage: 'No posts found.' });
+    } else {
+      res.status(200).json(posts);
+    }
+  })
+  .catch(err => {
+    console.log('Posts could not be retrieved.', err);
+    res.status(500).json({ error: 'The posts could not be retrieved.' });
+  })
 });
 
 router.delete('/:id', (req, res) => {
@@ -45,15 +63,17 @@ router.put('/:id', (req, res) => {
 //to be used on every request that expects a user id parameter.
 function validateUserId(req, res, next) {
   const id = req.params.id;
-  const user = req.user;
-
-  if (id.length > 0) {
-    user
-  } else {
-    res
-      .status(400)
-      .json({ message: 'invalid user id.' });
-  }
+  
+  Users.getById(id)
+    .then(user => {
+      if (user) {
+        req.user = user;
+      } else {
+        res
+          .status(400)
+          .json({ message: 'invalid user ID.' });
+      }
+    })
   next();
 };
 
