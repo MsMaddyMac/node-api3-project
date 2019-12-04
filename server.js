@@ -1,4 +1,5 @@
 const express = require('express');
+const helmet = require('helmet');
 
 const server = express();
 
@@ -52,9 +53,16 @@ function validatePost(req, res, next) {
   }
   if (!postData.text) {
     res.status(400).json({ message: 'missing required text field.' })
+  } else {
+    next();
   }
 };
 
+server.use(helmet());
+server.use(express.json());
 server.use(logger); // this will run globally (on every endpoint).
+
+// endpoints
+
 
 module.exports = server;
