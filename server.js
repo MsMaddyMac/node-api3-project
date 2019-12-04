@@ -33,13 +33,25 @@ function validateUserId(req, res, next) {
 function validateUser(req, res, next) {
   const userData = req.body;
 
-  if (!userData) {
+  if (userData.length === 0) {
     res.status(400).json({ message: 'missing user data.' });
   }
   if (!userData.name) {
     res.status(400).json({ message: 'missing required name field.' });
   } else {
     next();
+  }
+};
+
+// validates body on a request to create a new post 
+function validatePost(req, res, next) {
+  const postData = req.body;
+
+  if (postData.length === 0) {
+    res.status(400).json({ message: 'missing post data.' });
+  }
+  if (!postData.text) {
+    res.status(400).json({ message: 'missing required text field.' })
   }
 };
 
