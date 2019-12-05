@@ -41,6 +41,7 @@ router.get('/', (req, res) => {
   });
 });
 
+// retrieves user with specified ID
 router.get('/:id', validateUserId, (req, res) => {
   Users.getById(req.params.id)
   .then(user => {
@@ -67,6 +68,7 @@ router.get('/:id/posts', validateUserId, (req, res) => {
   })
 });
 
+// deletes user with specified ID
 router.delete('/:id', validateUserId, (req, res) => {
   const id = req.params.id;
 
@@ -84,8 +86,26 @@ router.delete('/:id', validateUserId, (req, res) => {
   })
 });
 
-router.put('/:id', (req, res) => {
-  // do your magic!
+// updates user data with specified ID
+router.put('/:id', validateUserId, (req, res) => {
+  const edits = req.body;
+  const id = req.params.id;
+
+  Users.update(id, edits)
+  .then(user => {
+    if(user.length === 0) {
+      res.status(404).json({ message: 'The user with the specified ID does not exist.' });
+    }
+    if(!edits.name) {
+      res.status(400).json({ errorMessage: 'Please provide user name.' });
+    } else {
+      res.status(200).json({ user: `user ${id} was updated.` });
+    }
+  })
+  .catch(err => {
+    console.log('error editing user', err);
+    res.status(500).json({ error: 'The user information could not be modified.' });
+  })
 });
 
 //custom middleware
