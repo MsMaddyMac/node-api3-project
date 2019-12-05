@@ -16,8 +16,17 @@ router.post('/', validateUser, (req, res) => {
   })
 });
 
-router.post('/:id/posts', (req, res) => {
-  // do your magic!
+router.post('/:id/posts', validatePost, (req, res) => {
+  const postData = {...req.body, user_id: req.params.id }; 
+  
+  Posts.insert(postData)
+  .then(post => {
+    res.status(201).json(post);
+  })
+  .catch(err => {
+    console.log('Error adding new post.', err);
+    res.status(500).json({ message: 'Error adding new post for user.' });
+  })
 });
 
 // retrieves list of Users
@@ -100,9 +109,9 @@ function validateUser(req, res, next) {
 
 // validates body on a request to create a new post 
 function validatePost(req, res, next) {
-  const postData = req.body;
+  const postData = {...req.body, user_id: req.params.id };
 
-  if (postData.length === 0) {
+  if (Object.keys(postData).length === 0) {
     res.status(400).json({ message: 'missing post data.' });
   }
   if (!postData.text) {
