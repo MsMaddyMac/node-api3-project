@@ -16,9 +16,9 @@ router.post('/', validateUser, (req, res) => {
   })
 });
 
-router.post('/:id/posts', validatePost, (req, res) => {
+router.post('/:id/posts', validateUserId, validatePost, (req, res) => {
   const postData = {...req.body, user_id: req.params.id }; 
-  
+
   Posts.insert(postData)
   .then(post => {
     res.status(201).json(post);
@@ -67,8 +67,21 @@ router.get('/:id/posts', validateUserId, (req, res) => {
   })
 });
 
-router.delete('/:id', (req, res) => {
-  // do your magic!
+router.delete('/:id', validateUserId, (req, res) => {
+  const id = req.params.id;
+
+  Users.remove(id)
+  .then(user => {
+    if(user.length === 0) {
+      res.status(404).json({ message: 'The user with the specified' })
+    } else {
+      res.status(200).json({ message: 'The user is history!' });
+    }
+  })
+  .catch(err => {
+    console.log('Error deleting user.', err);
+    res.status(500).json({ message: 'Error deleting user.' });
+  })
 });
 
 router.put('/:id', (req, res) => {
