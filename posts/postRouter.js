@@ -4,6 +4,7 @@ const Posts = require('./postDb');
 
 const router = express.Router();
 
+// gets all posts in database
 router.get('/', (req, res) => {
   Posts.get(req.query)
   .then(posts => {
@@ -15,6 +16,7 @@ router.get('/', (req, res) => {
   });
 });
 
+// gets post by specified ID
 router.get('/:id', validatePostId, (req, res) => {
   Posts.getById(req.params.id)
   .then(post => {
@@ -26,8 +28,22 @@ router.get('/:id', validatePostId, (req, res) => {
   })
 });
 
+// deletes post by specified ID
 router.delete('/:id', validatePostId, (req, res) => {
-  // do your magic!
+  const id = req.params.id;
+
+  Posts.remove(id)
+  .then(post => {
+    if(post > 0) {
+      res.status(200).json({ message: 'The post has been nuked!' });
+    }
+  })
+  .catch(err => {
+    console.log('Post could not be deleted.', err);
+    res.status(500).json({
+      message: 'Error removing the post.'
+    });
+  });
 });
 
 router.put('/:id', validatePostId, (req, res) => {

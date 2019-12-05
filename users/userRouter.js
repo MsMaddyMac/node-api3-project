@@ -77,7 +77,7 @@ router.delete('/:id', validateUserId, (req, res) => {
   Users.remove(id)
   .then(user => {
     if(user.length === 0) {
-      res.status(404).json({ message: 'The user with the specified' })
+      res.status(404).json({ message: 'No user with the specified' })
     } else {
       res.status(200).json({ message: 'The user is history!' });
     }
