@@ -5,6 +5,7 @@ const Posts = require('../posts/postDb');
 
 const router = express.Router();
 
+// creates a new user
 router.post('/', validateUser, (req, res) => {
   Users.insert(req.body)
   .then(user => {
@@ -16,6 +17,7 @@ router.post('/', validateUser, (req, res) => {
   })
 });
 
+// creates a new post for a user with specified ID
 router.post('/:id/posts', validateUserId, validatePost, (req, res) => {
   const postData = {...req.body, user_id: req.params.id }; 
 
