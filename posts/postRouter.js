@@ -52,9 +52,9 @@ router.put('/:id', validatePostId, (req, res) => {
   const id = req.params.id;
 
   Posts.update(id, edits)
-  .then(post => {
+  .then(() => {
     if(!edits.text || !edits.user_id) {
-      res.status(400).json({ errorMessage: 'Please provide updated text and/or user_id.' });
+      res.status(400).json({ errorMessage: 'Text and user_id are required.' });
     } else {
       res.status(200).json({ post: `post ${id} was updated.` });
     }

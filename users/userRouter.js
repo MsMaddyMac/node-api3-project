@@ -94,10 +94,7 @@ router.put('/:id', validateUserId, (req, res) => {
   const id = req.params.id;
 
   Users.update(id, edits)
-  .then(user => {
-    if(user.length === 0) {
-      res.status(404).json({ message: 'The user with the specified ID does not exist.' });
-    }
+  .then(() => {
     if(!edits.name) {
       res.status(400).json({ errorMessage: 'Please provide user name.' });
     } else {
